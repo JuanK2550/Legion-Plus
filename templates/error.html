@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legión+ | Error {{ codigo }}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230a0a0d'/><text x='16' y='24' font-size='20' font-weight='bold' fill='%23e01b24' text-anchor='middle' font-family='Arial'>L</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/estilos.css">
+</head>
+<body class="pagina-error">
+
+<header class="barra">
+  <div class="barra-contenido">
+    <h1 class="logo">Legión<span>+</span></h1>
+  </div>
+</header>
+
+<main class="error-caja">
+  <p class="error-codigo">{{ codigo }}</p>
+  <h2 class="error-titulo">{{ titulo }}</h2>
+  <p class="error-mensaje">{{ mensaje }}</p>
+  <a class="boton boton-rojo" href="/static/index.html">Volver a la cartelera</a>
+</main>
+
+</body>
+</html>
