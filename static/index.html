@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legión+ | Cartelera</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230a0a0d'/><text x='16' y='24' font-size='20' font-weight='bold' fill='%23e01b24' text-anchor='middle' font-family='Arial'>L</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-contenido">
+    <h1 class="logo">Legión<span>+</span></h1>
+    <input type="search" id="buscador" name="buscar-pelicula" class="buscador" placeholder="Buscar película o director..." autocomplete="off" aria-label="Buscar película o director">
+    <button id="btn-perfil" class="chip-perfil oculto" title="Cambiar de perfil"></button>
+    <a href="admin.html" id="enlace-admin" class="boton boton-borde oculto">Admin</a>
+    <button id="btn-registro" class="boton boton-borde">Crear cuenta</button>
+    <button id="btn-sesion" class="boton boton-rojo">Iniciar sesión</button>
+  </div>
+</header>
+
+<section id="carrusel" class="carrusel oculto">
+  <div id="diapositivas" class="diapositivas"></div>
+  <button id="anterior" class="flecha flecha-izq" aria-label="Anterior">&#10094;</button>
+  <button id="siguiente" class="flecha flecha-der" aria-label="Siguiente">&#10095;</button>
+  <div id="puntos" class="puntos"></div>
+</section>
+
+<main class="contenido">
+
+  <div class="controles">
+    <div class="grupos-filtro">
+      <div id="filtros" class="filtros"></div>
+      <div id="filtros-lista" class="filtros filtros-mi-lista oculto"></div>
+    </div>
+    <div class="controles-derecha">
+      <select id="orden" class="selector" aria-label="Ordenar cartelera">
+        <option value="calificacion">Mejor calificadas</option>
+        <option value="titulo">Título (A-Z)</option>
+        <option value="anio">Más recientes</option>
+      </select>
+    </div>
+  </div>
+
+  <p id="estado-cargando" class="estado">Cargando cartelera...</p>
+  <p id="estado-vacio" class="estado oculto">No hay películas en la cartelera.</p>
+  <p id="estado-error" class="estado estado-error oculto">No se pudo conectar con la API.</p>
+
+  <div id="cartelera" class="cartelera"></div>
+
+  <section class="proximamente">
+    <h2 class="titulo-seccion">Próximamente</h2>
+    <p class="subtitulo-seccion">Estrenos que llegan a Legión+</p>
+    <div id="estrenos" class="estrenos"></div>
+  </section>
+</main>
+
+<!-- Modal: detalle -->
+<div id="modal-detalle" class="modal">
+  <div class="modal-caja modal-detalle">
+    <button class="cerrar" data-cerrar="modal-detalle" aria-label="Cerrar">&times;</button>
+    <div class="detalle">
+      <div id="detalle-poster" class="detalle-poster"></div>
+      <div class="detalle-texto">
+        <h3 id="detalle-titulo"></h3>
+        <p id="detalle-datos" class="detalle-datos"></p>
+        <p id="detalle-estrellas" class="estrellas"></p>
+        <p class="etiqueta">Director</p>
+        <p id="detalle-director"></p>
+        <p class="etiqueta">Sinopsis</p>
+        <p id="detalle-sinopsis"></p>
+        <p class="etiqueta" id="detalle-donde-etiqueta">Dónde verla</p>
+        <div id="detalle-donde"></div>
+        <div id="detalle-marcas" class="oculto">
+          <p class="etiqueta">Mi lista</p>
+          <div class="marcas">
+            <button class="marca" data-estado="vista">✓ Ya la vi</button>
+            <button class="marca" data-estado="viendo">▶ La estoy viendo</button>
+            <button class="marca" data-estado="no_interesa">✕ No me interesa</button>
+          </div>
+        </div>
+        <button id="btn-trailer" class="boton boton-rojo oculto">▶ Ver tráiler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: login -->
+<div id="modal-login" class="modal">
+  <div class="modal-caja modal-angosto">
+    <button class="cerrar" data-cerrar="modal-login" aria-label="Cerrar">&times;</button>
+    <h3>Iniciar sesión</h3>
+    <form id="formulario-login" class="formulario-login">
+      <div class="campo">
+        <label for="campo-usuario">Usuario</label>
+        <input id="campo-usuario" type="text" required autocomplete="username">
+      </div>
+      <div class="campo">
+        <label for="campo-password">Contraseña</label>
+        <input id="campo-password" type="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="boton boton-rojo">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: crear cuenta -->
+<div id="modal-registro" class="modal">
+  <div class="modal-caja modal-angosto">
+    <button class="cerrar" data-cerrar="modal-registro" aria-label="Cerrar">&times;</button>
+    <h3>Crear cuenta</h3>
+    <p class="subtitulo-seccion">Con una cuenta puedes crear perfiles y llevar tu lista.</p>
+    <form id="formulario-registro" class="formulario-login">
+      <div class="campo">
+        <label for="registro-usuario">Usuario</label>
+        <input id="registro-usuario" type="text" maxlength="30" required autocomplete="username">
+      </div>
+      <div class="campo">
+        <label for="registro-password">Contraseña (mínimo 8 caracteres)</label>
+        <input id="registro-password" type="password" minlength="8" required autocomplete="new-password">
+      </div>
+      <button type="submit" class="boton boton-rojo">Crear cuenta</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: perfiles -->
+<div id="modal-perfiles" class="modal">
+  <div class="modal-caja modal-perfiles">
+    <button class="cerrar" data-cerrar="modal-perfiles" aria-label="Cerrar">&times;</button>
+    <h3>¿Quién está viendo?</h3>
+    <div id="lista-perfiles" class="lista-perfiles"></div>
+
+    <details id="caja-perfil-nuevo" class="plegable">
+      <summary id="resumen-perfil">Agregar un perfil</summary>
+      <div class="plegable-cuerpo">
+        <div class="campo">
+          <label for="campo-perfil-nombre">Nombre</label>
+          <input id="campo-perfil-nombre" type="text" maxlength="20" placeholder="Juan">
+        </div>
+        <div class="campo">
+          <label for="campo-perfil-clave">Clave de 4 dígitos (opcional)</label>
+          <input id="campo-perfil-clave" type="password" inputmode="numeric"
+                 maxlength="4" placeholder="····" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label>Avatar</label>
+          <div id="elegir-avatar" class="elegir-avatar"></div>
+        </div>
+        <div class="acciones">
+          <button id="btn-crear-perfil" class="boton boton-rojo">Crear perfil</button>
+          <button id="btn-cancelar-perfil" class="boton boton-borde oculto">Cancelar</button>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- Modal: clave del perfil -->
+<div id="modal-clave" class="modal">
+  <div class="modal-caja modal-angosto">
+    <button class="cerrar" data-cerrar="modal-clave" aria-label="Cerrar">&times;</button>
+    <h3>Perfil protegido</h3>
+    <p id="clave-texto"></p>
+    <form id="formulario-clave" class="formulario-login">
+      <div class="campo">
+        <label for="campo-clave">Clave de 4 dígitos</label>
+        <input id="campo-clave" type="password" inputmode="numeric" maxlength="4"
+               autocomplete="off" required>
+      </div>
+      <button type="submit" class="boton boton-rojo">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: tráiler -->
+<div id="modal-trailer" class="modal">
+  <div class="modal-caja modal-trailer">
+    <button class="cerrar" data-cerrar="modal-trailer" aria-label="Cerrar">&times;</button>
+    <h3 id="trailer-titulo">Tráiler</h3>
+    <div class="video">
+      <iframe id="video" title="Tráiler" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<div id="avisos" class="avisos"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
