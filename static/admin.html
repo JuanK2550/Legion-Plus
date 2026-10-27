@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Legión+ | Administración</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230a0a0d'/><text x='16' y='24' font-size='20' font-weight='bold' fill='%23e01b24' text-anchor='middle' font-family='Arial'>L</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-contenido">
+    <h1 class="logo">Legión<span>+</span> <small class="admin-etiqueta">Admin</small></h1>
+    <a href="index.html" class="boton boton-borde">← Ver sitio</a>
+    <button id="btn-salir" class="boton boton-rojo oculto">Cerrar sesión</button>
+  </div>
+</header>
+
+<main class="contenido">
+
+  <!-- Acceso -->
+  <section id="vista-login" class="admin-login oculto">
+    <h2 class="titulo-seccion">Acceso de administrador</h2>
+    <form id="form-login" class="formulario-login">
+      <div class="campo">
+        <label for="a-usuario">Usuario</label>
+        <input id="a-usuario" type="text" required autocomplete="username">
+      </div>
+      <div class="campo">
+        <label for="a-password">Contraseña</label>
+        <input id="a-password" type="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="boton boton-rojo">Entrar</button>
+    </form>
+  </section>
+
+  <!-- Panel -->
+  <section id="vista-panel" class="oculto">
+    <div class="admin-barra">
+      <input id="a-buscar" type="search" class="buscador" placeholder="Buscar por título o director..." autocomplete="off">
+      <select id="a-filtro-estado" class="selector" aria-label="Filtrar por estado">
+        <option value="">Todos los estados</option>
+        <option value="disponible">Disponibles</option>
+        <option value="proximamente">Próximamente</option>
+      </select>
+      <button id="btn-sync" class="boton boton-borde">⟳ Sincronizar TMDB</button>
+      <button id="btn-nueva" class="boton boton-rojo">+ Nueva película</button>
+    </div>
+
+    <p id="a-contador" class="subtitulo-seccion"></p>
+
+    <div class="admin-tabla-caja">
+      <table class="admin-tabla">
+        <thead>
+          <tr>
+            <th>ID</th><th>Título</th><th>Director</th><th>Género</th>
+            <th>Año</th><th>Nota</th><th>Estado</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="a-filas"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- Modal: crear / editar -->
+<div id="modal-pelicula" class="modal">
+  <div class="modal-caja modal-admin">
+    <button class="cerrar" data-cerrar="modal-pelicula" aria-label="Cerrar">&times;</button>
+    <h3 id="form-titulo">Nueva película</h3>
+    <form id="form-pelicula" class="admin-formulario" novalidate>
+      <div class="campo"><label for="f-titulo">Título *</label>
+        <input id="f-titulo" type="text" maxlength="200" required></div>
+      <div class="campo"><label for="f-director">Director *</label>
+        <input id="f-director" type="text" maxlength="200" required></div>
+      <div class="campo"><label for="f-genero">Género *</label>
+        <select id="f-genero"></select></div>
+      <div class="campo"><label for="f-anio">Año *</label>
+        <input id="f-anio" type="number" min="1888" step="1"></div>
+      <div class="campo"><label for="f-estado">Estado</label>
+        <select id="f-estado">
+          <option value="disponible">Disponible</option>
+          <option value="proximamente">Próximamente</option>
+        </select></div>
+      <div class="campo"><label for="f-calificacion">Calificación (0-10)</label>
+        <input id="f-calificacion" type="number" min="0" max="10" step="0.1"></div>
+      <div class="campo"><label for="f-fecha">Fecha de estreno</label>
+        <input id="f-fecha" type="text" maxlength="50" placeholder="5 de febrero de 2027"></div>
+      <div class="campo"><label for="f-plataformas">Plataformas</label>
+        <input id="f-plataformas" type="text" maxlength="500" placeholder="Netflix, Max"></div>
+      <div class="campo ancho"><label for="f-poster">URL del póster</label>
+        <input id="f-poster" type="url" maxlength="500" placeholder="https://..."></div>
+      <div class="campo ancho"><label for="f-fondo">URL de la imagen de fondo</label>
+        <input id="f-fondo" type="url" maxlength="500" placeholder="https://..."></div>
+      <div class="campo ancho"><label for="f-trailer">URL del tráiler (YouTube)</label>
+        <input id="f-trailer" type="url" maxlength="500" placeholder="https://www.youtube.com/watch?v=..."></div>
+      <div class="campo ancho"><label for="f-sinopsis">Sinopsis</label>
+        <textarea id="f-sinopsis" rows="4" maxlength="5000"></textarea></div>
+      <div class="acciones ancho">
+        <button type="submit" id="btn-guardar" class="boton boton-rojo">Guardar</button>
+        <button type="button" class="boton boton-borde" data-cerrar="modal-pelicula">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: confirmar borrado -->
+<div id="modal-borrar" class="modal">
+  <div class="modal-caja modal-angosto">
+    <button class="cerrar" data-cerrar="modal-borrar" aria-label="Cerrar">&times;</button>
+    <h3>Eliminar película</h3>
+    <p id="borrar-texto"></p>
+    <div class="acciones">
+      <button id="btn-confirmar-borrar" class="boton boton-rojo">Sí, eliminar</button>
+      <button class="boton boton-borde" data-cerrar="modal-borrar">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: sincronizar -->
+<div id="modal-sync" class="modal">
+  <div class="modal-caja modal-angosto">
+    <button class="cerrar" data-cerrar="modal-sync" aria-label="Cerrar">&times;</button>
+    <h3>Sincronizar con TMDB</h3>
+    <p>Importa populares, mejor calificadas y próximos estrenos. Opcionalmente añade títulos concretos (uno por línea, máx. 20).</p>
+    <div class="campo"><label for="sync-titulos">Títulos extra</label>
+      <textarea id="sync-titulos" rows="4" placeholder="Interstellar&#10;Dune Part Two"></textarea></div>
+    <div class="acciones">
+      <button id="btn-sync-ir" class="boton boton-rojo">Sincronizar</button>
+      <button class="boton boton-borde" data-cerrar="modal-sync">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="avisos" class="avisos"></div>
+
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
